@@ -1,0 +1,54 @@
+# ----------------------------------------------------------------
+# .gitignore pour un projet Vue.js
+# ----------------------------------------------------------------
+
+# Dépendances et modules
+# ---
+# Le dossier contenant tous les paquets npm/yarn/pnpm
+node_modules/
+# Fichier de lock généré par pnpm
+pnpm-lock.yaml
+
+# Fichiers de build
+# ---
+# Dossier de sortie de la compilation (build)
+dist/
+dist-ssr/
+.output/
+# Dossiers de cache
+.nuxt/
+.vite-inspect/
+.vue-devtools-proxy/
+
+# Fichiers de logs
+# ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Fichiers d'environnement locaux
+# ---
+# Ne jamais versionner les secrets !
+.env.local
+.env.*.local
+
+# Fichiers de configuration d'éditeur et IDE
+# ---
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Fichiers système
+# ---
+.DS_Store
+Thumbs.db
+
+# Fichiers de tests
+# ---
+# Rapport de couverture de tests
+coverage/
