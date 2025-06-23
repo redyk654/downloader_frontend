@@ -10,7 +10,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:8000/api/facebook-download/', {
+    const response = await fetch('http://127.0.0.1:8000/api/downloads/record/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

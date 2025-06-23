@@ -45,7 +45,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow-md p-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">Téléchargements par Qualité</h2>
-          <Line v-if="qualityData.length > 0" :data="qualityChartData" :options="chartOptions" />
+          <Bar v-if="qualityData.length > 0" :data="qualityChartData" :options="chartOptions" />
         </div>
         <!-- Necessite un service de géolocalisation -->
         <!-- <div class="bg-white rounded-lg shadow-md p-6">
@@ -119,7 +119,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { Line, Pie } from 'vue-chartjs';
+import { Bar, Line, Pie } from 'vue-chartjs';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
@@ -159,6 +159,7 @@ const timeSeriesChartData = computed(() => {
         label: 'Total Téléchargements',
         data: totalDownloads,
         borderColor: '#3B82F6', // blue-500
+        backgroundColor: '#3B82F6', // blue-500
         tension: 0.3,
         fill: false,
       },
@@ -166,6 +167,7 @@ const timeSeriesChartData = computed(() => {
         label: 'Succès',
         data: successfulDownloads,
         borderColor: '#10B981', // green-500
+        backgroundColor: '#10B981', // green-500
         tension: 0.3,
         fill: false,
       },
@@ -173,6 +175,7 @@ const timeSeriesChartData = computed(() => {
         label: 'Échecs',
         data: failedDownloads,
         borderColor: '#EF4444', // red-500
+        backgroundColor: '#EF4444', // red-500
         tension: 0.3,
         fill: false,
       },
