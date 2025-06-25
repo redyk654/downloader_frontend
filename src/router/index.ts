@@ -8,15 +8,9 @@ const routes = [
     component: HomeView,
   },
   {
-    path: '/facebookdownloader',
-    name: 'facebookdownloader',
-    component: () => import('../views/FacebookDownloaderView.vue'),
-  },
-  {
-    path: '/youtubedownloader',
-    name: 'youtubedownloader',
-    // Lazy load the YouTube Downloader view
-    component: () => import('../views/YoutubeDownloaderView.vue'),
+    path: '/videodownloader',
+    name: 'videodownloader',
+    component: () => import('../views/VideoDownloaderView.vue'),
   },
   {
     path: '/admin',

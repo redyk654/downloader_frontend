@@ -1,0 +1,127 @@
+const API_BASE = 'http://127.0.0.1:8000';
+
+const getAuthHeaders = (): HeadersInit => {
+  const token = localStorage.getItem('authToken');
+  return token
+    ? { 'Authorization': `Token ${token}`, 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/json' };
+};
+
+interface FetchWithAuthOptions extends RequestInit {
+  headers?: Record<string, string>;
+}
+
+interface ErrorData {
+  detail?: string;
+  non_field_errors?: string[];
+  [key: string]: any;
+}
+
+const fetchWithAuth = async <T = any>(url: string, options: FetchWithAuthOptions = {}): Promise<T> => {
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: { ...getAuthHeaders(), ...(options.headers || {}) },
+    });
+
+    if (!response.ok) {
+      let errorMsg = 'Erreur réseau';
+      let errorData: ErrorData = {};
+      try {
+        errorData = await response.json();
+        errorMsg = errorData.detail || errorData.non_field_errors?.[0] || errorMsg;
+      } catch {}
+      if (response.status === 401 || response.status === 403) {
+        errorMsg = "Accès non autorisé. Veuillez vous reconnecter.";
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('isAdmin');
+      }
+      throw new Error(errorMsg);
+    }
+    return await response.json();
+  } catch (err) {
+    throw err;
+  }
+};
+
+const fetchWithoutAuth = async <T = any>(url: string, options: FetchWithAuthOptions = {}): Promise<T> => {
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    });
+    if (!response.ok) {
+      let errorMsg = 'Erreur réseau';
+      let errorData: ErrorData = {};
+      try {
+        errorData = await response.json();
+        errorMsg = errorData.detail || errorData.non_field_errors?.[0] || errorMsg;
+      } catch {}
+      throw new Error(errorMsg);
+    }
+    return await response.json();
+  } catch (err) {
+    throw err;
+  }
+};
+
+// --- Fonctions API spécifiques ---
+
+// Récupération des statistiques
+export const fetchOverviewStats = async () => {
+  return await fetchWithAuth(`${API_BASE}/api/stats/overview/`);
+};
+
+export const fetchTimeSeries = async (period = 'day') => {
+  return await fetchWithAuth(`${API_BASE}/api/stats/timeseries/?period=${period}`);
+};
+
+export const fetchQualityStats = async () => {
+  return await fetchWithAuth(`${API_BASE}/api/stats/by-quality/`);
+};
+
+export const fetchCountryStats = async () => {
+  return await fetchWithAuth(`${API_BASE}/api/stats/by-country/`);
+};
+
+export const fetchRecentDownloads = async () => {
+  // À adapter selon ton API réelle
+  return await fetchWithAuth(`${API_BASE}/api/stats/recent-downloads/`);
+};
+
+export const loginUser = async (username: String, password: String) => {
+  try {
+    const response = await fetch(`${API_BASE}/api-token-auth/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    if (!response.ok) {
+      let errorData: ErrorData = {};
+      try {
+        errorData = await response.json();
+      } catch {}
+      throw new Error(errorData.non_field_errors?.[0] || 'Erreur de connexion.');
+    }
+    return await response.json();
+  } catch (err) {
+    throw err;
+  }
+};
+
+
+// Enregistrement d'un téléchargement vidéo
+export const recordVideoDownload = async (videoUrl: String) => {
+  return await fetchWithoutAuth(`${API_BASE}/api/downloads/record/`, {
+    method: 'POST',
+    body: JSON.stringify({ video_url: videoUrl }),
+  });
+};
+
+// Récupération des formats disponibles pour une vidéo
+export const fetchVideoFormats = async (videoUrl: String) => {
+  return await fetchWithoutAuth(`${API_BASE}/api/downloads/formats/`, {
+    method: 'POST',
+    body: JSON.stringify({ video_url: videoUrl }),
+  });
+}

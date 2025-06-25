@@ -42,6 +42,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { loginUser } from '@/api/api';
 
 const username = ref('');
 const password = ref('');
@@ -51,29 +52,11 @@ const router = useRouter();
 async function login() {
   error.value = null;
   try {
-    const response = await fetch('http://127.0.0.1:8000/api-token-auth/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: username.value,
-        password: password.value,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.non_field_errors ? errorData.non_field_errors[0] : 'Erreur de connexion.');
-    }
-
-    const data = await response.json();
+    const data = await loginUser(username.value, password.value);
     localStorage.setItem('authToken', data.token);
-    localStorage.setItem('isAdmin', data.is_admin); // Stocke le statut admin
-
+    localStorage.setItem('isAdmin', data.is_admin);
     router.push('/admin');
   } catch (err) {
-    console.error('Login failed:', err);
     error.value = err.message;
   }
 }

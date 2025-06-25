@@ -5,7 +5,7 @@ import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="min-h-screen bg-gradient-to-r from-gray-100 to-gray-300">
     <!-- Header fixe qui occupe toute la largeur -->
     <header
       class="flex justify-between items-center px-6 py-4 bg-white shadow-md w-full fixed top-0 left-0 z-50"
@@ -13,7 +13,7 @@ import { RouterLink, RouterView } from 'vue-router';
       <!-- Logo à gauche -->
       <div class="flex-shrink-0">
         <div class="text-xl font-bold text-gray-800">
-          Logo
+          Vidown
         </div>
       </div>
       
@@ -30,18 +30,10 @@ import { RouterLink, RouterView } from 'vue-router';
           </li>
           <li>
             <RouterLink
-              to="/facebookdownloader"
+              to="/videodownloader"
               class="px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-all duration-200"
             >
-              Facebook Downloader
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink
-              to="/youtubedownloader"
-              class="px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-all duration-200"
-            >
-              Youtube Downloader
+              Video Downloader
             </RouterLink>
           </li>
           <li>
