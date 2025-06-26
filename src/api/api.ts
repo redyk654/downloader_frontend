@@ -89,7 +89,7 @@ export const fetchRecentDownloads = async () => {
   return await fetchWithAuth(`${API_BASE}/api/stats/recent-downloads/`);
 };
 
-export const loginUser = async (username: String, password: String) => {
+export const loginUser = async (username: string, password: string) => {
   try {
     const response = await fetch(`${API_BASE}/api-token-auth/`, {
       method: 'POST',
@@ -109,9 +109,44 @@ export const loginUser = async (username: String, password: String) => {
   }
 };
 
+export const registerUser = async (username: string, email: string, password: string) => {
+  try {
+    const response = await fetch(`${API_BASE}/api/auth-register/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, email }),
+    });
+    if (!response.ok) {
+      let errorMsg = "Erreur d'inscription.";
+      try {
+        // Essaye de parser le JSON
+        const errorData = await response.json();
+        if (typeof errorData === 'object' && errorData !== null) {
+          // Concatène tous les messages d’erreur du serveur
+          errorMsg = Object.values(errorData)
+            .map(val => Array.isArray(val) ? val.join(', ') : val)
+            .join(' | ') || errorMsg;
+        } else if (typeof errorData === 'string') {
+          errorMsg = errorData;
+        }
+      } catch {
+        // Si le JSON n'est pas exploitable, essaye de lire le texte brut
+        try {
+          const text = await response.text();
+          if (text) errorMsg = text;
+        } catch {}
+      }
+      throw new Error(errorMsg);
+    }
+    return await response.json();
+  } catch (err) {
+    throw err;
+  }
+};
+
 
 // Enregistrement d'un téléchargement vidéo
-export const recordVideoDownload = async (videoUrl: String) => {
+export const recordVideoDownload = async (videoUrl: string) => {
   return await fetchWithoutAuth(`${API_BASE}/api/downloads/record/`, {
     method: 'POST',
     body: JSON.stringify({ video_url: videoUrl }),
@@ -119,7 +154,7 @@ export const recordVideoDownload = async (videoUrl: String) => {
 };
 
 // Récupération des formats disponibles pour une vidéo
-export const fetchVideoFormats = async (videoUrl: String) => {
+export const fetchVideoFormats = async (videoUrl: string) => {
   return await fetchWithoutAuth(`${API_BASE}/api/downloads/formats/`, {
     method: 'POST',
     body: JSON.stringify({ video_url: videoUrl }),

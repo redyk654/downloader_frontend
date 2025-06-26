@@ -1,5 +1,6 @@
 import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import path from 'path';
 
 const routes = [
   {
@@ -23,9 +24,14 @@ const routes = [
     component: () => import('../views/UnauthorizedView.vue'),
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/LoginView.vue'),
+    path: '/signin',
+    name: 'signin',
+    component: () => import('../views/SignInView.vue'),
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: () => import('../views/SignUpView.vue'),
   },
   {
     path: '/:pathMatch(.*)*',
@@ -46,9 +52,9 @@ router.beforeEach((to, from, next) => {
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
 
   if (requiresAuth && !token) {
-    next('/login'); // Pas authentifié
-  } else if (to.name === 'login' && token) {
-    next('/admin'); // Déjà authentifié, redirige vers le dashboard
+    next('/signin'); // Pas authentifié
+  } else if (to.name === 'signin' && token) {
+    next('/'); // Déjà authentifié, redirige vers l'accueil
   } else if (requiresAdmin && token && !isAdmin) {
     next('/unauthorized'); // Authentifié mais pas admin, redirige vers page non autorisée
   } else {
