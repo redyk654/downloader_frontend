@@ -146,11 +146,16 @@ export const registerUser = async (username: string, email: string, password: st
 
 
 // Enregistrement d'un téléchargement vidéo
-export const recordVideoDownload = async (videoUrl: string) => {
+export const recordVideoDownload = async (videoUrl: string, origineVideo: string, formatPreference: string) => {
   return await fetchWithoutAuth(`${API_BASE}/api/downloads/record/`, {
     method: 'POST',
-    body: JSON.stringify({ video_url: videoUrl }),
+    body: JSON.stringify({ video_url: videoUrl, origine_video: origineVideo, format_preference: formatPreference }),
   });
+};
+
+// Verifier le status d'un téléchargement
+export const checkDownloadStatus = async (downloadId: string) => {
+  return await fetchWithAuth(`${API_BASE}/api/downloads/task-status/${downloadId}/`);
 };
 
 // Récupération des formats disponibles pour une vidéo
