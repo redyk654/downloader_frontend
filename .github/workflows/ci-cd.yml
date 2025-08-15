@@ -1,0 +1,69 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '**/README.md'
+    # Limite au repo actuel
+    if: github.repository == 'redyk654/downloader_frontend'
+  pull_request:
+    branches:
+      - main
+      - master
+    if: github.repository == 'redyk654/downloader_frontend'
+
+jobs:
+  build-and-test:
+    if: github.repository == 'redyk654/downloader_frontend'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run unit tests
+        run: npx jest --config jest.config.cjs --runInBand
+
+      - name: Build project
+        run: npm run build
+
+  deploy:
+    if: github.repository == 'redyk654/downloader_frontend' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/caisse_mbanga')
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build project
+        run: npm run build
+
+      # Exemple de déploiement sur un serveur via SSH (à adapter)
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          password: ${{ secrets.DEPLOY_PASS }}
+          source: "dist/*"
+          target: ${{ secrets.DEPLOY_TARGET }}
+
+      # Vous pouvez remplacer cette étape par un déploiement vers Vercel, Netlify, ou autre selon vos besoins.
