@@ -1,6 +1,5 @@
-import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import path from 'path';
 
 const routes = [
   {
@@ -19,7 +18,7 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true } 
   },
   {
-    path: '/unauthorized', // Nouvelle route pour les non-admins
+    path: '/unauthorized',
     name: 'unauthorized',
     component: () => import('../views/UnauthorizedView.vue'),
   },
@@ -47,20 +46,19 @@ const router = createRouter({
 // Navigation Guard : Vérifie l'authentification et le rôle admin
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('authToken');
-  const isAdmin = localStorage.getItem('isAdmin') === 'true'; // Récupère le statut admin
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  const requiresAuth = to.matched.some(record => record.meta?.requiresAuth);
+  const requiresAdmin = to.matched.some(record => record.meta?.requiresAdmin);
 
   if (requiresAuth && !token) {
-    next('/signin'); // Pas authentifié
+    next('/signin');
   } else if (to.name === 'signin' && token) {
-    next('/'); // Déjà authentifié, redirige vers l'accueil
+    next('/');
   } else if (requiresAdmin && token && !isAdmin) {
-    next('/unauthorized'); // Authentifié mais pas admin, redirige vers page non autorisée
+    next('/unauthorized');
   } else {
-    next(); // Continue la navigation
+    next();
   }
 });
-
 
 export default router

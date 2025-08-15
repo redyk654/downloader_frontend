@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: downloader_frontend_ci-cd
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
         run: npm run build
 
   deploy:
-    if: github.repository == 'redyk654/downloader_frontend' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/caisse_mbanga')
+    if: github.repository == 'redyk654/downloader_frontend' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
