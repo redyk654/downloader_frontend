@@ -44,7 +44,7 @@ const router = createRouter({
 })
 
 // Navigation Guard : Vérifie l'authentification et le rôle admin
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const token = localStorage.getItem('authToken');
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const requiresAuth = to.matched.some(record => record.meta?.requiresAuth);

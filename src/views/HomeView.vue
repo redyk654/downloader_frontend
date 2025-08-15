@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import HeroSection from '@/components/HeroSection.vue'
 import FeaturesSection from '@/components/FeaturesSection.vue'
-import StatsSection from '@/components/StatsSection.vue'
 import CtaSection from '@/components/CtaSection.vue'
 
 const router = useRouter()
