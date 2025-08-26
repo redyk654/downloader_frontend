@@ -86,7 +86,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Utiliser le chemin correct depuis votre configuration Nginx
             TARGET_DIR="/var/www/vidown"
             
             # Créer le dossier de production s'il n'existe pas
@@ -103,10 +102,16 @@ jobs:
             # Supprimer l'ancien contenu
             sudo rm -rf "$TARGET_DIR"/*
             
-            # Déplacer les nouveaux fichiers
-            sudo mv /tmp/deploy-frontend/* "$TARGET_DIR"/
+            # Déplacer le contenu du dossier dist/ vers la racine
+            if [ -d "/tmp/deploy-frontend/dist" ]; then
+              echo "📁 Structure détectée: déplacement depuis dist/"
+              sudo mv /tmp/deploy-frontend/dist/* "$TARGET_DIR"/
+            else
+              echo "📁 Structure plate: déplacement direct"
+              sudo mv /tmp/deploy-frontend/* "$TARGET_DIR"/
+            fi
             
-            # Corriger les permissions (www-data pour Nginx)
+            # Corriger les permissions
             sudo chown -R www-data:www-data "$TARGET_DIR"
             sudo chmod -R 755 "$TARGET_DIR"
             
@@ -120,11 +125,15 @@ jobs:
             if [ -f "$TARGET_DIR/index.html" ]; then
               echo "✅ Déploiement terminé avec succès !"
               echo "📁 Dossier: $TARGET_DIR"
+              echo "📊 Contenu:"
+              ls -la "$TARGET_DIR"/
               echo "🌐 Application déployée avec succès"
             else
               echo "❌ Erreur: index.html non trouvé dans $TARGET_DIR"
-              echo "Contenu du dossier:"
+              echo "📊 Contenu du dossier:"
               ls -la "$TARGET_DIR"/
+              echo "📁 Contenu de /tmp/deploy-frontend:"
+              ls -la /tmp/deploy-frontend/
               exit 1
             fi
 
@@ -137,14 +146,9 @@ jobs:
           port: 22
           script: |
             TARGET_DIR="/var/www/vidown"
-            echo "🔍 Vérification du déploiement..."
-            echo "📁 Contenu de $TARGET_DIR :"
+            echo "🔍 Vérification finale..."
+            echo "📊 Contenu de $TARGET_DIR:"
             ls -la "$TARGET_DIR"/
-            
-            echo "📊 Taille des fichiers :"
-            du -sh "$TARGET_DIR"/*
-            
-            echo "🌐 Test de l'application :"
+            echo "🌐 Test HTTP:"
             curl -s -o /dev/null -w "HTTP Code: %{http_code}\n" http://localhost || true
-            
             echo "✅ Vérification terminée"
