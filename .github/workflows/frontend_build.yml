@@ -62,7 +62,7 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_PASS }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
           target: ${{ secrets.DEPLOY_TARGET }}
 
