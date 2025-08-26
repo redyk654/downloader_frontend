@@ -7,7 +7,6 @@ on:
       - master
     paths-ignore:
       - '**/README.md'
-    # Limite au repo actuel
     if: github.repository == 'redyk654/downloader_frontend'
   pull_request:
     branches:
@@ -56,14 +55,88 @@ jobs:
       - name: Build project
         run: npm run build
 
-      # Exemple de déploiement sur un serveur via SSH (à adapter)
-      - name: Deploy to server
+      - name: Prepare deployment directory on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Créer le dossier temporaire et s'assurer qu'il est accessible
+            mkdir -p /tmp/deploy-frontend
+            chmod 755 /tmp/deploy-frontend
+            echo "✅ Dossier temporaire préparé"
+
+      - name: Upload build files to temporary directory
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "dist/*"
-          target: ${{ secrets.DEPLOY_TARGET }}
+          target: "/tmp/deploy-frontend/"
+          strip_components: 0
 
-      # Vous pouvez remplacer cette étape par un déploiement vers Vercel, Netlify, ou autre selon vos besoins.
+      - name: Finalize deployment on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Créer le dossier de production s'il n'existe pas
+            sudo mkdir -p /var/www/downloader-frontend
+            
+            # Sauvegarder l'ancienne version (optionnel)
+            if [ -d "/var/www/downloader-frontend" ]; then
+              backup_dir="/var/www/backup-frontend-$(date +%Y%m%d%H%M%S)"
+              sudo mkdir -p "$backup_dir"
+              sudo cp -r /var/www/downloader-frontend/* "$backup_dir/" 2>/dev/null || true
+              echo "📦 Ancienne version sauvegardée dans: $backup_dir"
+            fi
+            
+            # Supprimer l'ancien contenu
+            sudo rm -rf /var/www/downloader-frontend/*
+            
+            # Déplacer les nouveaux fichiers
+            sudo mv /tmp/deploy-frontend/* /var/www/downloader-frontend/
+            
+            # Corriger les permissions
+            sudo chown -R www-data:www-data /var/www/downloader-frontend
+            sudo chmod -R 755 /var/www/downloader-frontend
+            
+            # Nettoyer le dossier temporaire
+            rm -rf /tmp/deploy-frontend
+            
+            # Redémarrer Nginx
+            sudo systemctl restart nginx
+            
+            # Vérifier le déploiement
+            if [ -f "/var/www/downloader-frontend/index.html" ]; then
+              echo "✅ Déploiement terminé avec succès !"
+              echo "🌐 L'application est disponible sur: http://$(hostname -I | awk '{print $1}')"
+            else
+              echo "❌ Erreur: index.html non trouvé après déploiement"
+              exit 1
+            fi
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Vérifications finales
+            echo "🔍 Vérification du déploiement..."
+            echo "Contenu du dossier de déploiement:"
+            ls -la /var/www/downloader-frontend/
+            
+            echo "Status de Nginx:"
+            sudo systemctl status nginx --no-pager
+            
+            echo "Test de l'application:"
+            curl -s -o /dev/null -w "HTTP Code: %{http_code}\n" http://localhost || true
