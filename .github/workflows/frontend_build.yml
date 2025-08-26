@@ -63,7 +63,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Créer le dossier temporaire et s'assurer qu'il est accessible
+            # Créer le dossier temporaire
             mkdir -p /tmp/deploy-frontend
             chmod 755 /tmp/deploy-frontend
             echo "✅ Dossier temporaire préparé"
@@ -86,26 +86,29 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Créer le dossier de production s'il n'existe pas
-            sudo mkdir -p /var/www/downloader-frontend
+            # Utiliser le chemin correct depuis votre configuration Nginx
+            TARGET_DIR="/var/www/vidown"
             
-            # Sauvegarder l'ancienne version (optionnel)
-            if [ -d "/var/www/downloader-frontend" ]; then
-              backup_dir="/var/www/backup-frontend-$(date +%Y%m%d%H%M%S)"
+            # Créer le dossier de production s'il n'existe pas
+            sudo mkdir -p "$TARGET_DIR"
+            
+            # Sauvegarder l'ancienne version
+            if [ -d "$TARGET_DIR" ]; then
+              backup_dir="/var/www/backup-vidown-$(date +%Y%m%d%H%M%S)"
               sudo mkdir -p "$backup_dir"
-              sudo cp -r /var/www/downloader-frontend/* "$backup_dir/" 2>/dev/null || true
+              sudo cp -r "$TARGET_DIR"/* "$backup_dir/" 2>/dev/null || true
               echo "📦 Ancienne version sauvegardée dans: $backup_dir"
             fi
             
             # Supprimer l'ancien contenu
-            sudo rm -rf /var/www/downloader-frontend/*
+            sudo rm -rf "$TARGET_DIR"/*
             
             # Déplacer les nouveaux fichiers
-            sudo mv /tmp/deploy-frontend/* /var/www/downloader-frontend/
+            sudo mv /tmp/deploy-frontend/* "$TARGET_DIR"/
             
-            # Corriger les permissions
-            sudo chown -R www-data:www-data /var/www/downloader-frontend
-            sudo chmod -R 755 /var/www/downloader-frontend
+            # Corriger les permissions (www-data pour Nginx)
+            sudo chown -R www-data:www-data "$TARGET_DIR"
+            sudo chmod -R 755 "$TARGET_DIR"
             
             # Nettoyer le dossier temporaire
             rm -rf /tmp/deploy-frontend
@@ -114,11 +117,14 @@ jobs:
             sudo systemctl restart nginx
             
             # Vérifier le déploiement
-            if [ -f "/var/www/downloader-frontend/index.html" ]; then
+            if [ -f "$TARGET_DIR/index.html" ]; then
               echo "✅ Déploiement terminé avec succès !"
-              echo "🌐 L'application est disponible sur: http://$(hostname -I | awk '{print $1}')"
+              echo "📁 Dossier: $TARGET_DIR"
+              echo "🌐 Application déployée avec succès"
             else
-              echo "❌ Erreur: index.html non trouvé après déploiement"
+              echo "❌ Erreur: index.html non trouvé dans $TARGET_DIR"
+              echo "Contenu du dossier:"
+              ls -la "$TARGET_DIR"/
               exit 1
             fi
 
@@ -130,13 +136,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Vérifications finales
+            TARGET_DIR="/var/www/vidown"
             echo "🔍 Vérification du déploiement..."
-            echo "Contenu du dossier de déploiement:"
-            ls -la /var/www/downloader-frontend/
+            echo "📁 Contenu de $TARGET_DIR :"
+            ls -la "$TARGET_DIR"/
             
-            echo "Status de Nginx:"
-            sudo systemctl status nginx --no-pager
+            echo "📊 Taille des fichiers :"
+            du -sh "$TARGET_DIR"/*
             
-            echo "Test de l'application:"
+            echo "🌐 Test de l'application :"
             curl -s -o /dev/null -w "HTTP Code: %{http_code}\n" http://localhost || true
+            
+            echo "✅ Vérification terminée"
