@@ -10,11 +10,11 @@ defineProps<{
       <div class="text-center mb-20">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
           <span class="bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Pourquoi choisir Vidown ?
+            Why choose Vidown?
           </span>
         </h2>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-          Découvrez toutes les fonctionnalités qui font de Vidown la meilleure solution pour télécharger vos vidéos.
+          Discover all the features that make Vidown the best solution for downloading your videos.
         </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
