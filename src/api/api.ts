@@ -1,4 +1,4 @@
-const API_BASE = 'https://vidown-backend.chris-you.com';
+const API_BASE = 'https://rimeo-djangoapi.chris-you.com';
 
 const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem('authToken');

@@ -33,11 +33,16 @@ const features = ref([
     title: 'Multi-Platform',
     description: 'Compatible with all your devices: computer, tablet, and smartphone.'
   },
-  // {
-  //   icon: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z',
-  //   title: 'Stockage Cloud',
-  //   description: 'Sauvegardez vos vidéos dans le cloud pour y accéder depuis n\'importe où.'
-  // }
+  {
+    icon: 'M5 13l4 4L19 7',
+    title: 'Easy to Use',
+    description: 'Simple and intuitive interface. Downloading videos has never been easier.'
+  },
+  {
+    icon: 'M3 10h11M9 21V3m0 0L5 7m4-4l4 4',
+    title: 'No registration',
+    description: 'No need to create an account. Start downloading immediately.'
+  }
 ])
 
 const goToDownloader = () => router.push('/videodownloader')

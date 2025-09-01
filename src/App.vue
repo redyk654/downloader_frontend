@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { RouterLink, RouterView, useRouter } from 'vue-router';
+import { RouterLink, RouterView } from 'vue-router';
 
-const router = useRouter();
+// const router = useRouter();
 const username = ref<string | null>('');
 const isMobileMenuOpen = ref(false);
 
@@ -16,13 +16,13 @@ onMounted(() => {
   window.addEventListener('storage', checkAuth);
 });
 
-const logout = () => {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('isAdmin');
-  localStorage.removeItem('username');
-  username.value = '';
-  router.push('/signin');
-};
+// const logout = () => {
+//   localStorage.removeItem('authToken');
+//   localStorage.removeItem('isAdmin');
+//   localStorage.removeItem('username');
+//   username.value = '';
+//   router.push('/signin');
+// };
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
@@ -42,13 +42,10 @@ const closeMobileMenu = () => {
       <!-- Logo à gauche avec gradient et icône -->
       <div class="flex-shrink-0">
         <div class="flex items-center space-x-2 sm:space-x-3">
-          <div class="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg">
-            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-            </svg>
-          </div>
+          <!-- Logo -->
+          <img src="@/assets/logo.png" alt="Rimeo Logo" class="w-16 h-16 sm:w-20 sm:h-20" />
           <div class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Vidown
+            Rimeo
           </div>
         </div>
       </div>
@@ -74,7 +71,7 @@ const closeMobileMenu = () => {
               Video Downloader
             </RouterLink>
           </li>
-          <li>
+          <!-- <li>
             <RouterLink
               to="/admin"
               class="px-4 xl:px-6 py-3 text-gray-700 hover:bg-white/60 hover:text-blue-600 rounded-xl transition-all duration-300 font-medium hover:shadow-md transform hover:scale-105"
@@ -82,7 +79,7 @@ const closeMobileMenu = () => {
             >
               Admin
             </RouterLink>
-          </li>
+          </li> -->
         </ul>
       </nav>
 
@@ -92,7 +89,7 @@ const closeMobileMenu = () => {
         <div class="flex-shrink-0">
           <template v-if="username">
             <!-- Version desktop -->
-            <div class="hidden sm:flex items-center space-x-3 lg:space-x-4 bg-white/40 backdrop-blur-sm rounded-2xl p-2 lg:p-3 shadow-lg border border-white/30">
+            <!-- <div class="hidden sm:flex items-center space-x-3 lg:space-x-4 bg-white/40 backdrop-blur-sm rounded-2xl p-2 lg:p-3 shadow-lg border border-white/30">
               <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center shadow-lg">
                 <svg class="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round"
@@ -107,7 +104,7 @@ const closeMobileMenu = () => {
               >
                 Logout
               </button>
-            </div>
+            </div> -->
             <!-- Version mobile -->
             <div class="sm:hidden flex items-center space-x-2">
               <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center shadow-lg">
@@ -121,7 +118,7 @@ const closeMobileMenu = () => {
           </template>
           <template v-else>
             <!-- Version desktop -->
-            <div class="hidden sm:flex space-x-2 lg:space-x-3">
+            <!-- <div class="hidden sm:flex space-x-2 lg:space-x-3">
               <button
                 class="cursor-pointer px-4 lg:px-6 py-2 lg:py-3 text-sm lg:text-base text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 transform hover:scale-105 font-medium"
                 @click="$router.push('/signin')"
@@ -134,16 +131,16 @@ const closeMobileMenu = () => {
               >
                 Sign Up
               </button>
-            </div>
+            </div> -->
             <!-- Version mobile - boutons plus petits -->
-            <div class="sm:hidden flex space-x-2">
+            <!-- <div class="sm:hidden flex space-x-2">
               <button
                 class="cursor-pointer px-3 py-2 text-xs text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:shadow-lg transition-all duration-300 font-medium"
                 @click="$router.push('/signin')"
               >
                 Sign In
               </button>
-            </div>
+            </div> -->
           </template>
         </div>
 
@@ -208,7 +205,7 @@ const closeMobileMenu = () => {
 
         <!-- Auth mobile (si non connecté) -->
         <div v-if="!username" class="border-t border-gray-200 pt-4">
-          <div class="space-y-3">
+          <!-- <div class="space-y-3">
             <button
               class="w-full cursor-pointer px-4 py-3 text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
               @click="$router.push('/signin'); closeMobileMenu()"
@@ -221,12 +218,12 @@ const closeMobileMenu = () => {
             >
               Sign Up
             </button>
-          </div>
+          </div> -->
         </div>
 
         <!-- User info et logout mobile (si connecté) -->
         <div v-if="username" class="border-t border-gray-200 pt-4">
-          <div class="flex items-center justify-between">
+          <!-- <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
               <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center shadow-lg">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -243,7 +240,7 @@ const closeMobileMenu = () => {
             >
               Logout
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

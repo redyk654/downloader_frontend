@@ -58,6 +58,15 @@ const pollStatus = async (id) => {
     stopStatusPolling();
   }
 };
+
+const pasteLastClipboard = async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    if (text) videoUrl.value = text;
+  } catch (e) {
+    alert("Impossible d'accéder au presse-papier. Autorisez l'accès dans votre navigateur.");
+  }
+};
 </script>
 
 <template>
@@ -71,10 +80,10 @@ const pollStatus = async (id) => {
           </svg>
         </div>
         <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-          Video Downloader
+          Rimeo Downloader
         </h1>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Download your favorite videos from Facebook, YouTube, Instagram, TikTok, and Twitter with ease
+          Download your favorite videos from Facebook, Instagram, TikTok, and Twitter with ease
         </p>
       </div>
 
@@ -84,7 +93,7 @@ const pollStatus = async (id) => {
           <form @submit.prevent="handleSubmit" class="space-y-8">
             <!-- URL Input Section -->
             <div class="space-y-3">
-              <label for="videoUrl" class="flex items-center text-sm font-semibold text-gray-700">
+              <label for="videoUrl" class="flex items-center text-sm font-semibold text-gray-700 cursor-pointer" @click="pasteLastClipboard">
                 <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                 </svg>
@@ -100,7 +109,7 @@ const pollStatus = async (id) => {
                   autocomplete="off"
                   class="w-full px-4 py-4 pl-12 border-2 border-gray-200 rounded-xl shadow-sm focus:border-blue-400 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-300 text-gray-700 placeholder-gray-400"
                 />
-                <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="cursor-pointer absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" @click="pasteLastClipboard">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
               </div>
@@ -189,12 +198,12 @@ const pollStatus = async (id) => {
               </div>
               <span class="text-xs text-gray-500">Facebook</span>
             </div>
-            <div class="flex flex-col items-center space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <!-- <div class="flex flex-col items-center space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
               <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
                 <span class="text-white font-bold text-sm">YT</span>
               </div>
               <span class="text-xs text-gray-500">YouTube</span>
-            </div>
+            </div> -->
             <div class="flex flex-col items-center space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
               <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
                 <span class="text-white font-bold text-sm">IG</span>

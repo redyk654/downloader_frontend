@@ -19,25 +19,25 @@ defineProps<{
           </span>
           <br>
           <span class="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-            with ease
+            without registration
           </span>
         </h1>
         <p class="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Vidown lets you easily download your favorite videos from your favorite platforms.
+          <strong>Rimeo</strong> lets you easily download your favorite videos from your favorite platforms.
           Fast, secure, and free.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-          <button @click="onDownloader" class="group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 transform hover:scale-105 font-semibold text-lg flex items-center space-x-2">
+          <button @click="onDownloader" class="cursor-pointer group px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 transform hover:scale-105 font-semibold text-lg flex items-center space-x-2">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             <span>Start Downloading</span>
           </button>
-          <button @click="onSignUp" class="px-8 py-4 text-blue-600 bg-white/60 backdrop-blur-sm border-2 border-blue-300 rounded-2xl hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 transform hover:scale-105 font-semibold text-lg shadow-lg">
+          <!-- <button @click="onSignUp" class="px-8 py-4 text-blue-600 bg-white/60 backdrop-blur-sm border-2 border-blue-300 rounded-2xl hover:bg-gradient-to-r hover:from-blue-500 hover:to-purple-600 hover:text-white hover:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 transform hover:scale-105 font-semibold text-lg shadow-lg">
             Create a free account
-          </button>
+          </button> -->
         </div>
-        <div class="relative max-w-4xl mx-auto">
+        <!-- <div class="relative max-w-4xl mx-auto">
           <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 transform hover:scale-105 transition-all duration-500">
             <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-gray-300">
               <div class="flex items-center justify-center space-x-4 text-gray-500">
@@ -51,7 +51,7 @@ defineProps<{
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>
