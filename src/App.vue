@@ -190,7 +190,7 @@ const closeMobileMenu = () => {
                 Video Downloader
               </RouterLink>
             </li>
-            <li>
+            <!-- <li>
               <RouterLink
                 to="/admin"
                 class="block px-4 py-3 text-gray-700 hover:bg-white/60 hover:text-blue-600 rounded-xl transition-all duration-300 font-medium"
@@ -199,7 +199,7 @@ const closeMobileMenu = () => {
               >
                 Admin
               </RouterLink>
-            </li>
+            </li> -->
           </ul>
         </nav>
 
