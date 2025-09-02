@@ -3,18 +3,41 @@ import { ref } from 'vue';
 import { checkDownloadStatus, recordVideoDownload } from '@/api/api';
 
 const videoUrl = ref('');
+const originalUrl = ref('');
 const taskId = ref(null);
 const taskStatus = ref('idle'); // idle, processing, success, error
 const downloadUrl = ref(null);
 let statusTimeout = null;
+
+const getPlatformFromUrl = (url) => {
+  if (!url) return null;
+  const lowerUrl = url.toLowerCase();
+  if (lowerUrl.includes('facebook.com') || lowerUrl.includes('fb.watch')) return 'Facebook';
+  if (lowerUrl.includes('instagram.com')) return 'Instagram';
+  if (lowerUrl.includes('tiktok.com')) return 'TikTok';
+  if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return 'Twitter';
+  if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return 'YouTube';
+  return null;
+};
 
 const handleSubmit = async () => {
   if (!videoUrl.value) {
     alert('Please enter a valid video URL.');
     return;
   }
+
+  const platform = getPlatformFromUrl(videoUrl.value);
+  if (platform === 'YouTube') {
+    alert("YouTube n'est pas supporté par cette plateforme.");
+    return;
+  }
+  if (!platform) {
+    alert("Impossible de détecter la plateforme. Veuillez entrer une URL valide.");
+    return;
+  }
+
   try {
-    const data = await recordVideoDownload(videoUrl.value, 'YouTube', 'worst');
+    const data = await recordVideoDownload(videoUrl.value, platform, 'worst');
     console.log('Video processed successfully:', data);
     taskId.value = data.task_id;
     taskStatus.value = 'processing';
