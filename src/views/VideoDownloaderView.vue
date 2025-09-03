@@ -1,12 +1,14 @@
 <script setup>
 import { ref } from 'vue';
 import { checkDownloadStatus, recordVideoDownload } from '@/api/api';
+import { API_BASE } from '../api/api';
 
 const videoUrl = ref('');
 const originalUrl = ref('');
 const taskId = ref(null);
 const taskStatus = ref('idle'); // idle, processing, success, error
 const downloadUrl = ref(null);
+const errorMessage = ref('');
 let statusTimeout = null;
 
 const getPlatformFromUrl = (url) => {
@@ -17,6 +19,8 @@ const getPlatformFromUrl = (url) => {
   if (lowerUrl.includes('tiktok.com')) return 'TikTok';
   if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return 'Twitter';
   if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) return 'YouTube';
+  // snapchat, vimeo, dailymotion can be added here
+  if (lowerUrl.includes('snapchat.com')) return 'Snapchat';
   return null;
 };
 
@@ -38,7 +42,7 @@ const handleSubmit = async () => {
 
   try {
     const data = await recordVideoDownload(videoUrl.value, platform, 'worst');
-    console.log('Video processed successfully:', data);
+    // console.log('Video processed successfully:', data);
     taskId.value = data.task_id;
     taskStatus.value = 'processing';
     startStatusPolling(taskId.value);
@@ -63,20 +67,22 @@ const stopStatusPolling = () => {
 const pollStatus = async (id) => {
   try {
     const data = await checkDownloadStatus(id);
-    console.log('Download status:', data.task_status);
+    // console.log('Download status:', data.task_status);
     if (data.task_status === 'SUCCESS') {
       downloadUrl.value = data.result.download_url;
       taskStatus.value = 'success';
       stopStatusPolling();
     } else if (data.task_status === 'FAILURE') {
       taskStatus.value = 'error';
+      errorMessage.value = data.error_details;
+      console.log('Task failed:', data.error_details);
       stopStatusPolling();
     } else {
       // Encore en cours, relance le polling après 3s
       statusTimeout = setTimeout(() => pollStatus(id), 3000);
     }
   } catch (error) {
-    console.error('Error fetching download status:', error);
+    // console.error('Error fetching download status:', error);
     taskStatus.value = 'error';
     stopStatusPolling();
   }
@@ -90,6 +96,16 @@ const pasteLastClipboard = async () => {
     alert("Impossible d'accéder au presse-papier. Autorisez l'accès dans votre navigateur.");
   }
 };
+
+function downloadInNewTab(url) {
+    const link = document.createElement('a');
+    link.href = `${API_BASE}/api/downloads/proxy?url=${encodeURIComponent(url)}`;
+    link.setAttribute('download', 'video.mp4');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 </script>
 
 <template>
@@ -186,9 +202,8 @@ const pasteLastClipboard = async () => {
               </div>
               <p class="text-lg font-semibold text-gray-700 mb-6">Video processed successfully!</p>
               <a 
-                :href="downloadUrl" 
-                target="_blank" 
-                rel="noopener noreferrer"
+                @click.prevent="downloadInNewTab(downloadUrl)"
+                href="#"
                 class="cursor-pointer inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-200 transition-all duration-300 transform hover:scale-105"
               >
                 <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +221,7 @@ const pasteLastClipboard = async () => {
                 </svg>
               </div>
               <p class="text-lg font-semibold text-red-600 mb-2">Processing failed</p>
-              <p class="text-gray-600">Please check your URL and try again</p>
+              <p class="text-gray-600">{{ errorMessage }}</p>
             </div>
           </div>
         </div>

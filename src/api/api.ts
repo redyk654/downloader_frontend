@@ -1,4 +1,4 @@
-const API_BASE = 'https://rimeo-djangoapi.chris-you.com';
+export const API_BASE = 'https://rimeo-djangoapi.chris-you.com';
 
 const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem('authToken');
@@ -12,7 +12,7 @@ interface FetchWithAuthOptions extends RequestInit {
 }
 
 interface ErrorData {
-  detail?: string;
+  error_details?: string;
   non_field_errors?: string[];
   [key: string]: any;
 }
@@ -29,10 +29,10 @@ const fetchWithAuth = async <T = any>(url: string, options: FetchWithAuthOptions
       let errorData: ErrorData = {};
       try {
         errorData = await response.json();
-        errorMsg = errorData.detail || errorData.non_field_errors?.[0] || errorMsg;
+        errorMsg = errorData.error_details || errorData.non_field_errors?.[0] || errorMsg;
       } catch {}
       if (response.status === 401 || response.status === 403) {
-        errorMsg = "Accès non autorisé. Veuillez vous reconnecter.";
+        errorMsg = "Unauthorized access. Please log in again.";
         localStorage.removeItem('authToken');
         localStorage.removeItem('isAdmin');
       }
@@ -51,11 +51,11 @@ const fetchWithoutAuth = async <T = any>(url: string, options: FetchWithAuthOpti
       headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
     });
     if (!response.ok) {
-      let errorMsg = 'Erreur réseau';
+      let errorMsg = 'Network error. Please try again.';
       let errorData: ErrorData = {};
       try {
         errorData = await response.json();
-        errorMsg = errorData.detail || errorData.non_field_errors?.[0] || errorMsg;
+        errorMsg = errorData.error_details || errorData.non_field_errors?.[0] || errorMsg;
       } catch {}
       throw new Error(errorMsg);
     }
@@ -155,7 +155,7 @@ export const recordVideoDownload = async (videoUrl: string, origineVideo: string
 
 // Verifier le status d'un téléchargement
 export const checkDownloadStatus = async (downloadId: string) => {
-  return await fetchWithAuth(`${API_BASE}/api/downloads/task-status/${downloadId}/`);
+  return await fetchWithoutAuth(`${API_BASE}/api/downloads/task-status/${downloadId}/`);
 };
 
 // Récupération des formats disponibles pour une vidéo
