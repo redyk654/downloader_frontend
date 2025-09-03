@@ -260,6 +260,13 @@ function downloadInNewTab(url) {
               </div>
               <span class="text-xs text-gray-500">Twitter</span>
             </div>
+            <!-- Snapshat -->
+            <div class="flex flex-col items-center space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
+              <div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center">
+                <span class="text-white font-bold text-sm">SC</span>
+              </div>
+              <span class="text-xs text-gray-500">Snapchat</span>
+            </div>
           </div>
         </div>
       </div>
