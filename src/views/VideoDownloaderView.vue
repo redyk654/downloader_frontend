@@ -32,11 +32,15 @@ const handleSubmit = async () => {
 
   const platform = getPlatformFromUrl(videoUrl.value);
   if (platform === 'YouTube') {
-    alert("YouTube n'est pas supporté par cette plateforme.");
+    alert("YouTube is not supported.");
+    return;
+  }
+  if (platform === 'TikTok') {
+    alert("TikTok have issues with downloading. Please try another platform.");
     return;
   }
   if (!platform) {
-    alert("Impossible de détecter la plateforme. Veuillez entrer une URL valide.");
+    alert("Unable to detect the platform. Please enter a valid URL.");
     return;
   }
 
@@ -93,7 +97,7 @@ const pasteLastClipboard = async () => {
     const text = await navigator.clipboard.readText();
     if (text) videoUrl.value = text;
   } catch (e) {
-    alert("Impossible d'accéder au presse-papier. Autorisez l'accès dans votre navigateur.");
+    alert("Unable to access the clipboard. Please allow access in your browser.");
   }
 };
 
@@ -248,12 +252,12 @@ function downloadInNewTab(url) {
               </div>
               <span class="text-xs text-gray-500">Instagram</span>
             </div>
-            <div class="flex flex-col items-center space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <!-- <div class="flex flex-col items-center space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
               <div class="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-900 rounded-full flex items-center justify-center">
                 <span class="text-white font-bold text-sm">TT</span>
               </div>
               <span class="text-xs text-gray-500">TikTok</span>
-            </div>
+            </div> -->
             <div class="flex flex-col items-center space-y-2 opacity-70 hover:opacity-100 transition-opacity duration-300">
               <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center">
                 <span class="text-white font-bold text-sm">TW</span>
