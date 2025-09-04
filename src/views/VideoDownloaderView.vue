@@ -122,7 +122,7 @@ function downloadInNewTab(url) {
           Rimeo Downloader
         </h1>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Download your favorite videos from Facebook, Instagram, TikTok, and Twitter with ease
+          Download your favorite videos from Facebook, Instagram, Snapchat, and Twitter with ease
         </p>
       </div>
 
